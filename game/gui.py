@@ -85,7 +85,6 @@ class GUI:
 
     def __draw_pieces(self, position: np.ndarray):
         """Draw pieces on board according to current position"""
-        position[63] = 9
         for i, key in enumerate(position):
             if key in self.piece_imgs:
                 img = self.piece_imgs[key]
