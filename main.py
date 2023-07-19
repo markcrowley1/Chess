@@ -11,7 +11,7 @@ def main():
     gs = GameState()
 
     while gui.running is True:
-        gui.update(gs.get_mailbox64())
+        gui.update(gs)
     
 if __name__ == "__main__":
     main()

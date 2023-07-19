@@ -1,6 +1,6 @@
 """
 Description:
-    Miscellaneous functions
+    Miscellaneous functions - converting board representations
 """
 
 import numpy as np
@@ -55,6 +55,22 @@ def parse_fen_string(fen_string: str):
     )
     return parsed_data
 
+def fen_to_mailbox(fen_string: str):
+    pass
+
+def mailbox64_to_fen(mailbox: np.ndarray, fen_string: str):
+    """Convert mailbox repr back to fen string --- unfinished"""
+    count = 0
+    fen_string = ""
+    for i, val in enumerate(mailbox):
+        if val == 0:
+            count += 1
+        else:
+            fen_string += str(count)
+            count = 0
+
+"""Bitboard related conversions"""
+
 def fen_to_bitboard(piece: pieces.PieceEnums, fen_pieces: str) -> np.ndarray:
     """Take first part of fen string and convert to bitboard for single piece type."""
     piece_char: str = pieces.PieceMapping.enum_to_char[piece]
@@ -82,6 +98,11 @@ def bitboard_to_mailbox64(piece_id: pieces.PieceEnums, bitboard: np.ndarray, mai
     mailbox += single_piece_mailbox
     return mailbox
 
-def mailbox64_to_fen(mailbox: np.ndarray, fen_string: str):
-    """Convert mailbox repr back to fen string"""
-    pass
+def mailbox64_to_bitboard(mailbox: np.ndarray, piece_id: pieces.PieceEnums) -> np.ndarray:
+    bitboard = []
+    for val in mailbox:
+        if val == piece_id.value:
+            bitboard.append(1)
+        else:
+            bitboard.append(0)
+    return np.array(bitboard)

@@ -5,18 +5,13 @@ from abc import ABC, abstractmethod
 class Piece(ABC):
     def __init__(self, id, colour):
         # Create bitboard and id
-        self.bitboard = np.zeros(0, np.int8)
+        self.bitboard = np.zeros(64, np.int8)
         self.piece_id = id
         self.colour = colour
 
     @abstractmethod
-    def find_legal_moves(self, position: list) -> list:
-        """Determine the legal moves for this type of piece and return as list"""
-        pass
-
-    @abstractmethod
-    def update_bitboard(self):
-        """Read mailbox board position add bitboard representation for this piece"""
+    def find_legal_moves(self, friendly_pieces: np.ndarray, enemy_pieces: np.ndarray) -> list:
+        """Determine the pseudo legal moves for this type of piece and return as list"""
         pass
 
     def set_bitboard(self, bitboard: np.ndarray):

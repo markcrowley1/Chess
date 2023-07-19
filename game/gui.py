@@ -4,8 +4,9 @@ Description:
 """
 
 import pygame
-import game.pieces as pieces
 import numpy as np
+import game.pieces as pieces
+from game.gamestate import GameState
 
 class GUI:
     # Boolean to check if game running
@@ -31,7 +32,7 @@ class GUI:
         self.move_origin: int = -1
         self.move_destination: int = -1
 
-    def update(self, position):
+    def update(self, gs: GameState):
         """Update game window. Position argument used for drawing pieces on squares"""
         # Draw baseline board
         self.__draw_board()
@@ -48,7 +49,11 @@ class GUI:
                     if self.move_destination == self.move_origin:
                         print("Deselecting")
                     else:
-                        # Check with gamestate if move is allowed
+                        # Check if move is allowed and make move if so
+                        # After move is made find next set of legal moves
+                        gs.make_move(self.move_origin, self.move_destination)
+                        game_over = gs.is_game_over()
+                        gs.find_legal_moves()
                         print(f"Moving piece to {self.move_destination}")
                     self.move_origin = -1
                     self.move_destination = -1
@@ -67,7 +72,7 @@ class GUI:
 
         # Draw current position and refresh
         self.__highlight_squares("gold")
-        self.__draw_pieces(position)
+        self.__draw_pieces(gs.get_mailbox64())
         self.clock.tick(self.MAX_FPS)
         pygame.display.flip()
 

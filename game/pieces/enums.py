@@ -30,3 +30,18 @@ class PieceMapping:
         PieceEnums.WHITE_KING: "K",
         PieceEnums.BLACK_KING: "k"
     }
+
+    char_to_enum = {
+        "P": PieceEnums.WHITE_PAWN,
+        "p": PieceEnums.BLACK_PAWN,
+        "R": PieceEnums.WHITE_ROOK,
+        "r": PieceEnums.BLACK_ROOK,
+        "N": PieceEnums.WHITE_KNIGHT,
+        "n": PieceEnums.BLACK_KNIGHT,
+        "B": PieceEnums.WHITE_BISHOP,
+        "b": PieceEnums.BLACK_BISHOP,
+        "Q": PieceEnums.WHITE_QUEEN,
+        "q": PieceEnums.BLACK_QUEEN,
+        "K": PieceEnums.WHITE_KING,
+        "k": PieceEnums.BLACK_KING
+    }
