@@ -51,16 +51,18 @@ class GUI:
                     else:
                         # Check if move is allowed and make move if so
                         # After move is made find next set of legal moves
-                        gs.make_move(self.move_origin, self.move_destination)
-                        game_over = gs.is_game_over()
-                        gs.find_legal_moves()
-                        print(f"Moving piece to {self.move_destination}")
+                        if gs.is_legal_move(self.move_origin, self.move_destination):
+                            gs.make_move(self.move_origin, self.move_destination)
+                            game_over = gs.is_game_over()
+                            gs.find_legal_moves()
+                            print(f"Moving piece to {self.move_destination}")
                     self.move_origin = -1
                     self.move_destination = -1
                 # Left Click - Select Piece
                 elif e.button == 1:
                     self.move_origin = self.__get_square()
                     self.highlighted_squares.append(self.move_origin)
+                    self.__show_legal_moves(self.move_origin, gs.get_legal_moves())
                     print(f"Selected piece at {self.move_origin}")
                 # Right Click
                 elif e.button == 3:
@@ -103,6 +105,12 @@ class GUI:
         rank = self.DIMENSION - 1 - int(pos[1] / self.SQ_SIZE)
         square = file + rank*self.DIMENSION
         return square
+    
+    def __show_legal_moves(self, origin: int, legal_moves: list[tuple]):
+        for move in legal_moves:
+            if origin == move[0]:
+                self.highlighted_squares.append(move[1])
+        return
 
     def __highlight_squares(self, color: str):
         for square in self.highlighted_squares:

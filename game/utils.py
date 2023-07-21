@@ -55,8 +55,18 @@ def parse_fen_string(fen_string: str):
     )
     return parsed_data
 
-def fen_to_mailbox(fen_string: str):
-    pass
+def fen_to_mailbox64(fen_piece_string: str) -> np.ndarray:
+    mailbox64 = []
+    ranks: list = fen_piece_string.split("/")
+    ranks.reverse()
+    for rank in ranks:
+        for char in rank:
+            if char.isnumeric():
+                mailbox64 = mailbox64 + [0 for i in range(int(char))]
+            elif char in pieces.PieceMapping.char_to_enum:
+                mailbox64.append(pieces.PieceMapping.char_to_enum[char].value)
+    return np.array(mailbox64, np.int8)
+
 
 def mailbox64_to_fen(mailbox: np.ndarray, fen_string: str):
     """Convert mailbox repr back to fen string --- unfinished"""
@@ -69,7 +79,7 @@ def mailbox64_to_fen(mailbox: np.ndarray, fen_string: str):
             fen_string += str(count)
             count = 0
 
-"""Bitboard related conversions"""
+"""--- Bitboard related conversions ---"""
 
 def fen_to_bitboard(piece: pieces.PieceEnums, fen_pieces: str) -> np.ndarray:
     """Take first part of fen string and convert to bitboard for single piece type."""

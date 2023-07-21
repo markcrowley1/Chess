@@ -1,13 +1,12 @@
 
+import numpy as np
+from game.pieces.enums import PieceEnums
 from game.pieces.piece import Piece
 
 class Pawn(Piece):
-    def __init__(self, id, colour):
-        super().__init__(id, colour)
+    def __init__(self, id: PieceEnums):
+        self.id = id.value
 
-    def find_legal_moves(self, position: list) -> list:
-        return super().find_legal_moves(position)
-    
-    def update_bitboard(self):
-        return super().update_bitboard()
+    def pseudo_legal_moves(self, square: int, mailbox: np.ndarray) -> list:
+        return super().pseudo_legal_moves(square, mailbox)
     

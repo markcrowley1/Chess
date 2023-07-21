@@ -22,8 +22,4 @@ class PieceFactory:
     def create_piece(self, piece_id: pieces.PieceEnums):
         """ Create Piece object for storing piece locations 
             and determining possible moves """
-        if piece_id.value % 2 == 1:
-            colour = "w"
-        else:
-            colour = "b"
-        return self._pieces[piece_id](piece_id, colour)
+        return self._pieces[piece_id](piece_id)

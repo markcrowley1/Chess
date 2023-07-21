@@ -1,21 +1,11 @@
 
+import numpy as np
+from game.pieces.enums import PieceEnums
 from game.pieces.piece import Piece
 
 class Knight(Piece):
-    def __init__(self, id, colour):
-        super().__init__(id, colour)
+    def __init__(self, id: PieceEnums):
+        self.id = id.value
 
-    def find_legal_moves(self, position: list) -> list:
-        return super().find_legal_moves(position)
-    
-    def update_bitboard(self):
-        return super().update_bitboard()
-    
-    def get_bitboard(self):
-        return super().get_bitboard()
-    
-    def get_colour(self):
-        return super().get_colour()
-    
-    def get_piece_id(self):
-        return super().get_piece_id()
+    def pseudo_legal_moves(self, square: int, mailbox: np.ndarray) -> list:
+        return super().pseudo_legal_moves(square, mailbox)

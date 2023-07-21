@@ -1,21 +1,30 @@
 
+import numpy as np
+from game.pieces.enums import PieceEnums
 from game.pieces.piece import Piece
 
 class Bishop(Piece):
-    def __init__(self, id, colour):
-        super().__init__(id, colour)
+    offset_values = [11, 9, -11, -9]
 
-    def find_legal_moves(self, position: list) -> list:
-        return super().find_legal_moves(position)
-    
-    def update_bitboard(self):
-        return super().update_bitboard()
-    
-    def get_bitboard(self):
-        return super().get_bitboard()
-    
-    def get_colour(self):
-        return super().get_colour()
-    
-    def get_piece_id(self):
-        return super().get_piece_id()
+    def __init__(self, id: PieceEnums):
+        self.id = id.value
+
+    def pseudo_legal_moves(self, square: int, mailbox: np.ndarray) -> list:
+        """ Determine the pseudo legal moves for this piece"""
+        moves = []
+        for offset in self.offset_values:
+            full_offset = offset
+            while True:
+                destination = self.mailbox120[self.mailbox64_to_120[square] + full_offset]
+                if destination < 0:
+                    break
+                elif mailbox[destination] * self.id > 0:
+                    break
+                elif mailbox[destination] * self.id < 0:
+                    moves.append((square, destination))
+                    break
+                else:
+                    moves.append((square, destination))
+                    full_offset += offset
+                    print("test")
+        return moves
