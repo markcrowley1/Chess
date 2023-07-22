@@ -37,3 +37,17 @@ class Piece(ABC):
     def pseudo_legal_moves(self, square: int, mailbox: np.ndarray) -> list:
         """Determine the pseudo legal moves for this type of piece and return as list"""
         return []
+    
+    """--- Getter Methods ---"""
+
+    def get_offset_values(self):
+        return self.offset_values
+    
+    def get_id(self):
+        return self.id
+    
+    def get_mailbox120(self):
+        return self.mailbox120
+    
+    def get_mailbox64_to_120(self):
+        return self.mailbox64_to_120

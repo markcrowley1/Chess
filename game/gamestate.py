@@ -3,6 +3,7 @@ Description:
     Class for monitoring gamestate and determining legal moves.
 """
 
+from game.legal_moves import LegalMoves
 import game.utils as utils
 import game.pieces as pieces
 import numpy as np
@@ -28,6 +29,10 @@ class GameState:
                 piece = pf.create_piece(piece_id)
                 self.piece_dict[piece_id.value] = piece
 
+        # Create object for testing legality of pseudo legal moves
+        # and handling other miscellaneous rules
+        self.lm = LegalMoves()
+
         # Game status info
         self.mailbox64 = utils.fen_to_mailbox64(piece_placement_str)
         self.side_to_move: bool = parsed_fen[1] # Side to move
@@ -44,15 +49,31 @@ class GameState:
         pl_moves = []
         for i in range(64):
             piece_id_value = self.mailbox64[i]
-            if piece_id_value in self.piece_dict:
+            if (piece_id_value*self.side_to_move > 0 and 
+                    piece_id_value in self.piece_dict):
                 piece: pieces.Piece = self.piece_dict[piece_id_value]
                 moves = piece.pseudo_legal_moves(i, self.mailbox64)
                 pl_moves += moves
-        # Castling
         # En passant
+        
+
         # Ensure king is not in check after move
+        legal_moves = []
+        for pl_move in pl_moves:
+            origin, destination = pl_move
+            temp_mailbox64 = self.mailbox64.copy()
+            piece_id = temp_mailbox64[origin]
+            temp_mailbox64[origin] = 0
+            temp_mailbox64[destination] = piece_id
+            in_check = self.lm.is_king_in_check(self.side_to_move,
+                                                    temp_mailbox64)
+            if not in_check:
+                legal_moves.append(pl_move)
+
+        # Castling
+        
         print(pl_moves)
-        self.legal_moves = pl_moves
+        self.legal_moves = legal_moves
         return
     
     def is_legal_move(self, origin: int, destination: int) -> bool:
@@ -72,9 +93,11 @@ class GameState:
         self.mailbox64[origin] = 0
         self.mailbox64[destination] = piece_id
         # Update side to move and move count
-        self.side_to_move = not self.side_to_move
-        if self.side_to_move is False:
+        self.side_to_move = -self.side_to_move
+        if self.side_to_move > 0:
             self.full_move_counter += 1
+        print(f"Side to move is: {self.side_to_move}")
+        print(f"Move count is: {self.full_move_counter}")
         return
     
     def is_game_over(self):

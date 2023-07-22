@@ -4,6 +4,8 @@ from game.pieces.enums import PieceEnums
 from game.pieces.piece import Piece
 
 class Pawn(Piece):
+    offset_values = [9, 11] # Mailbox 120 attacking offsets
+
     def __init__(self, id: PieceEnums):
         self.id = id.value
 

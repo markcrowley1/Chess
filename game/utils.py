@@ -17,9 +17,9 @@ def parse_fen_string(fen_string: str):
     # Set side to move
     side_char: str = split_str[1]
     if side_char == "w":
-        side_to_move = False
+        side_to_move = 1
     else:
-        side_to_move = True
+        side_to_move = -1
     # Represent castling rights for both sides
     castling_rights_str = split_str[2]
     wk = wq = bk = bq = False
@@ -31,7 +31,7 @@ def parse_fen_string(fen_string: str):
         bk = True
     if "q" in castling_rights_str:
         bq = True
-    castling_rights = ((wk, wq), (bk, bq))
+    castling_rights = [[wk, wq], [bk, bq]]
     # Note square available for en passant
     enpassant_target_str = split_str[3]
     if enpassant_target_str == "-":
