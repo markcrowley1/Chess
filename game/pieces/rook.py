@@ -26,5 +26,4 @@ class Rook(Piece):
                 else:
                     moves.append((square, destination))
                     full_offset += offset
-                    print("test")
         return moves
