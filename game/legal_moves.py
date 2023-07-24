@@ -34,27 +34,28 @@ class LegalMoves:
         81, 82, 83, 84, 85, 86, 87, 88,
         91, 92, 93, 94, 95, 96, 97, 98
     ]
-    # Offsets to determine if king is in check
+    # Offsets to determine if square is under attack
     diagonal_offset_values = [9, -9, 11, -11]
     rank_file_offset_values = [1, -1, 10, -10]
-    knight_offset_values = [19, -19, 21, -21]
+    knight_offset_values = [21, 19, -21, -19, 12, 8, -12, -8]
     pawn_offset_values = [9, 11]
     white_king_value: int = pieces.PieceEnums.WHITE_KING.value
     diagonal_ids = [pieces.PieceEnums.BLACK_QUEEN.value, pieces.PieceEnums.BLACK_BISHOP.value]
     rank_file_ids = [pieces.PieceEnums.BLACK_QUEEN.value, pieces.PieceEnums.BLACK_ROOK.value]
+    # Special move tuples
+    castling_moves = ((4, 6), (4, 2), (60, 62), (60, 58))
+    double_pawn_move = ((1, 3), (6, 4))
 
     def __init__(self):
         pass
 
     def is_king_in_check(self, side_to_move: int, mailbox: np.ndarray) -> bool:
         """Determine whether or not the king is in check"""
-        print("func")
         in_check = False
         for i in range(64):
             piece_value = mailbox[i]
             if piece_value == self.white_king_value*side_to_move:
                 in_check = self.__is_square_attacked(i, side_to_move, mailbox)
-                print("if")
                 break
         return in_check
 
@@ -62,8 +63,26 @@ class LegalMoves:
         """Check if castling is allowed"""
         pass
 
+    def en_passant(self, previous_move: tuple, mailbox: np.ndarray):
+        """Check if en passant is legal and return move(s)"""
+        en_passant_square: int = -1
+        moves = []
+        # Check if double pawn move was made on previous turn
+        origin, destination = previous_move
+        origin_rank, destination_rank = int(origin/8), int(destination/8)
+        piece_id = mailbox[destination]
+        if ((origin_rank, destination_rank) in self.double_pawn_move and
+            abs(piece_id) == pieces.PieceEnums.WHITE_PAWN.value):
+            en_passant_square = origin + 8*piece_id
+            for offset in self.pawn_offset_values:
+                new_origin = self.mailbox120[self.mailbox64_to_120[en_passant_square] + piece_id*offset]
+                if (0 <= new_origin < 64) and mailbox[new_origin]*piece_id == pieces.PieceEnums.BLACK_PAWN.value:
+                    moves.append((new_origin, en_passant_square))
+
+        return en_passant_square, moves
+
     def __is_square_attacked(self, square: int, side_to_move: int, mailbox: np.ndarray) -> bool:
-        """Determine whether or not any particular square is attacked by enemy"""
+        """Determine whether or not any particular square is attacked by any enemy piece"""
         is_attacked = False
         # Check for diagonal sliding piece attacks
         for offset in self.diagonal_offset_values:
@@ -106,11 +125,8 @@ class LegalMoves:
                 
         # Check for pawn atacks
         for offset in self.pawn_offset_values:
-            destination = square + side_to_move*offset
-            if (0 <= destination < 64) and mailbox[destination]*destination == pieces.PieceEnums.BLACK_PAWN.value:
+            destination = self.mailbox120[self.mailbox64_to_120[square] + side_to_move*offset]
+            if (0 <= destination < 64) and mailbox[destination]*side_to_move == pieces.PieceEnums.BLACK_PAWN.value:
                 is_attacked = True
 
         return is_attacked
-
-    def en_passant(self, en_passant_square: int, mailbox: np.ndarray):
-        pass

@@ -8,7 +8,7 @@ from game.gamestate import GameState
 
 def main():
     gui = GUI()
-    gs = GameState("8/q7/8/8/8/8/8/6K1 w KQkq - 0 1")
+    gs = GameState("8/p7/8/1P6/8/8/6p1/6K1 w KQkq - 0 1")
 
     while gui.running is True:
         gui.update(gs)
